@@ -1,4 +1,4 @@
-name: CI
+name: Required checks
 
 on:
   pull_request:
@@ -10,7 +10,7 @@ on:
       - "feature/**"
 
 jobs:
-  test:
+  required-tests:
     runs-on: ubuntu-latest
 
     steps:

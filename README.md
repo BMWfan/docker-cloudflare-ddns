@@ -214,6 +214,23 @@ Important:
 - It expects `main` to be the default branch.
 - The Compose file expects a valid GHCR path in `IMAGE_NAME`.
 
+## Merge Protection
+
+To make sure pull requests can only be merged when the pipeline is green, enable branch protection for `main` in GitHub and require the CI status check from `.github/workflows/ci.yml`.
+
+Recommended GitHub settings for `main`:
+
+- Require a pull request before merging
+- Require status checks to pass before merging
+- Select the required check `required-tests`
+- Optionally enable `Require branches to be up to date before merging`
+
+With this setup:
+
+- Pull requests to `main` run the required test pipeline
+- A failed pipeline blocks the merge button in GitHub
+- After a successful merge to `main`, the release workflow creates the tag, GitHub release, and container images
+
 ## Changelog
 
 Release-facing and workflow-facing changes are tracked in `CHANGELOG.rst`.
