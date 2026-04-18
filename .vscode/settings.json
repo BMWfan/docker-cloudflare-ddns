@@ -1,0 +1,10 @@
+{
+  "python.testing.unittestEnabled": true,
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestArgs": [
+    "-s",
+    "tests",
+    "-v"
+  ],
+  "python.testing.autoTestDiscoverOnSaveEnabled": true
+}
