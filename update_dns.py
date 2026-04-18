@@ -20,7 +20,7 @@ LOCK_FILE = "/tmp/dns_update.lock"
 
 def acquire_lock():
     if os.path.exists(LOCK_FILE):
-        print("⏭️ DNS-Update läuft bereits – überspringe")
+        print("DNS update is already running - skipping")
         sys.exit(0)
     with open(LOCK_FILE, "w") as f:
         f.write(str(os.getpid()))
@@ -48,17 +48,17 @@ def get_ipv6(retries=5, delay=2):
                 ip = response.text.strip()
 
                 if ":" not in ip:
-                    raise ValueError(f"Keine IPv6-Adresse erhalten: {ip}")
+                    raise ValueError(f"Did not receive an IPv6 address: {ip}")
 
                 return ip
 
             except Exception as e:
                 last_error = e
 
-        print(f"⏳ IPv6 nicht erreichbar ({attempt}/{retries}) → {last_error}")
+        print(f"IPv6 lookup failed ({attempt}/{retries}) -> {last_error}")
         time.sleep(delay)
 
-    raise RuntimeError("❌ IPv6 konnte nicht ermittelt werden")
+    raise RuntimeError("Could not determine public IPv6 address")
 
 
 def cf_request(method, url, json=None, retries=5, delay=2):
@@ -75,7 +75,7 @@ def cf_request(method, url, json=None, retries=5, delay=2):
             )
 
             if 400 <= response.status_code < 500 and response.status_code != 429:
-                print(f"❌ Cloudflare API Fehler {response.status_code}: {response.text}")
+                print(f"Cloudflare API error {response.status_code}: {response.text}")
                 response.raise_for_status()
 
             response.raise_for_status()
@@ -83,15 +83,15 @@ def cf_request(method, url, json=None, retries=5, delay=2):
 
         except requests.RequestException as e:
             last_error = e
-            print(f"⏳ Cloudflare API Fehler ({attempt}/{retries}) → {e}")
+            print(f"Cloudflare API request failed ({attempt}/{retries}) -> {e}")
             time.sleep(delay)
 
-    raise RuntimeError(f"❌ Cloudflare API nicht erreichbar: {last_error}")
+    raise RuntimeError(f"Cloudflare API is unreachable: {last_error}")
 
 
 def update_record_for_host(host, ipv6):
     if ":" not in ipv6:
-        print(f"❌ Überspringe {host}: keine gültige IPv6-Adresse ({ipv6})")
+        print(f"Skipping {host}: invalid IPv6 address ({ipv6})")
         return
 
     list_url = (
@@ -107,10 +107,10 @@ def update_record_for_host(host, ipv6):
         record_id = record["id"]
 
         if record["content"] == ipv6:
-            print(f"⏭️ IP unverändert für {host}")
+            print(f"IP unchanged for {host}")
             return
 
-        print(f"🌐 Aktualisiere {host} → {ipv6}")
+        print(f"Updating {host} -> {ipv6}")
 
         update_url = (
             f"https://api.cloudflare.com/client/v4/zones/"
@@ -126,10 +126,10 @@ def update_record_for_host(host, ipv6):
         }
 
         cf_request("PUT", update_url, json=payload)
-        print(f"✅ Aktualisiert: {host}")
+        print(f"Updated: {host}")
 
     else:
-        print(f"➕ Erstelle DNS Record: {host} → {ipv6}")
+        print(f"Creating DNS record: {host} -> {ipv6}")
 
         create_url = (
             f"https://api.cloudflare.com/client/v4/zones/"
@@ -145,7 +145,7 @@ def update_record_for_host(host, ipv6):
         }
 
         cf_request("POST", create_url, json=payload)
-        print(f"✅ Erstellt: {host}")
+        print(f"Created: {host}")
 
 
 def collect_all_hosts():
@@ -176,7 +176,7 @@ def update_all_hosts():
     hosts = collect_all_hosts()
 
     if not hosts:
-        print("⚠️ Keine Hosts gefunden")
+        print("No hosts found")
         return
 
     for host in hosts:
