@@ -137,7 +137,7 @@ It includes:
 - Python 3.11
 - Docker CLI inside the development container
 - Access to the local Docker socket
-- Automatic installation from `requirements.txt`
+- Automatic installation from `requirements-dev.txt`
 
 Use it in VS Code:
 
@@ -149,6 +149,7 @@ After that, you can work directly inside the dev container and run commands such
 
 ```bash
 python -m py_compile app.py event_listener.py update_dns.py
+python -m unittest discover -s tests -v
 docker compose config
 ```
 
@@ -213,9 +214,15 @@ Important:
 - It expects `main` to be the default branch.
 - The Compose file expects a valid GHCR path in `IMAGE_NAME`.
 
+## Changelog
+
+Release-facing and workflow-facing changes are tracked in `CHANGELOG.rst`.
+Keep the `Unreleased` section current while working on feature branches, then move entries into a versioned section during release preparation.
+
 ## Project Structure
 
 - `app.py`: Flask app and HTTP trigger
 - `event_listener.py`: Docker event listener
 - `update_dns.py`: Cloudflare DNS update logic
 - `docker-compose.yml`: Local runtime configuration with Docker Compose
+- `CHANGELOG.rst`: Human-readable release and change history

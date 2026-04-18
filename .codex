@@ -14,12 +14,15 @@ summary = "Docker service for updating Cloudflare AAAA records based on the publ
 6 = "Before finishing Python changes, run at least `python3 -m py_compile app.py event_listener.py update_dns.py`."
 7 = "Before changing Compose or release files, keep README, .env.example, workflow files, and docker-compose.yml consistent."
 8 = "Do not accidentally remove locking or other protections against parallel DNS updates."
+9 = "Keep CHANGELOG.rst updated for user-visible development, release, and workflow changes."
 
 [conventions]
 python = "Use a simple, direct Python style without unnecessary abstraction."
 logging = "Keep logs short and operational."
 dependencies = "Only add small, clearly justified dependencies."
 docs = "Keep the README up to date when setup, release, or usage changes."
+commits = "Use commit messages that describe the actual change clearly enough to stand on their own."
+releases = "Release notes should be slightly more detailed than the commit title and should summarize the practical impact."
 
 [common_commands]
 syntax_check = "python3 -m py_compile app.py event_listener.py update_dns.py"

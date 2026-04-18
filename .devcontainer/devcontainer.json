@@ -7,9 +7,19 @@
   "mounts": [
     "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
   ],
-  "postCreateCommand": "pip install -r requirements.txt",
+  "postCreateCommand": "pip install -r requirements-dev.txt",
   "customizations": {
     "vscode": {
+      "settings": {
+        "python.testing.unittestEnabled": true,
+        "python.testing.pytestEnabled": false,
+        "python.testing.unittestArgs": [
+          "-s",
+          "tests",
+          "-v"
+        ],
+        "python.testing.autoTestDiscoverOnSaveEnabled": true
+      },
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
