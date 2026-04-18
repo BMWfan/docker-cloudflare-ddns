@@ -198,11 +198,12 @@ curl http://<your-host>:5055/ip-change
 The repository includes a workflow at `.github/workflows/release.yml`.
 
 Behavior:
-- On every push to `main`, the latest tag matching `vX.Y.Z` is checked.
+- After a merged pull request to `main`, the latest tag matching `vX.Y.Z` is checked.
 - If no tag exists yet, `v0.1.0` is created.
 - Otherwise, the patch version is incremented, for example `v0.1.3` -> `v0.1.4`.
 - A GitHub release is created automatically.
 - Then a Docker image is pushed to `ghcr.io/<owner>/<repo>`.
+- Multi-architecture images are published for `linux/amd64`, `linux/arm64`, and `linux/arm/v7`.
 - Two image tags are always published:
 - `<version>`, for example `0.1.4`
 - `latest`
