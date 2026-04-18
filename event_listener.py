@@ -3,8 +3,12 @@ import subprocess
 import time
 import sys
 
+
+SELF_CONTAINER_NAMES = {"cloudflare-updater", "docker-cloudflare-ddns"}
+
+
 def listen_for_docker_events():
-    print("📡 Starte Docker-Event-Listener...")
+    print("Starting Docker event listener...")
 
     while True:
         try:
@@ -19,14 +23,14 @@ def listen_for_docker_events():
                 if action != "start":
                     continue
 
-                container_name = event.get("Actor", {}).get("Attributes", {}).get("name", "unbekannt")
+                container_name = event.get("Actor", {}).get("Attributes", {}).get("name", "unknown")
                 container_id = event.get("id") or event.get("Actor", {}).get("ID")
 
-                if container_name == "cloudflare-updater":
+                if container_name in SELF_CONTAINER_NAMES:
                     continue
 
                 if not container_id:
-                    print(f"⚠️ Keine Container-ID für '{container_name}' gefunden")
+                    print(f"No container ID found for '{container_name}'")
                     continue
 
                 try:
@@ -41,15 +45,15 @@ def listen_for_docker_events():
                         cloudflare_host = env_dict.get("CLOUDFLARE_HOST")
 
                     if cloudflare_host:
-                        print(f"🌐 Trigger für '{container_name}' → {cloudflare_host}")
+                        print(f"Trigger received for '{container_name}' -> {cloudflare_host}")
                         subprocess.run(
                             [sys.executable, "/app/update_dns.py", cloudflare_host],
                             check=False,
                         )
 
                 except Exception as e:
-                    print(f"❌ Fehler bei '{container_name}': {e}")
+                    print(f"Error while processing '{container_name}': {e}")
 
         except Exception as e:
-            print(f"💥 Schwerer Fehler im Listener: {e}")
+            print(f"Fatal listener error: {e}")
             time.sleep(5)

@@ -15,6 +15,7 @@ summary = "Docker service for updating Cloudflare AAAA records based on the publ
 7 = "Before changing Compose or release files, keep README, .env.example, workflow files, and docker-compose.yml consistent."
 8 = "Do not accidentally remove locking or other protections against parallel DNS updates."
 9 = "Keep CHANGELOG.rst updated for user-visible development, release, and workflow changes."
+10 = "Every change must go into a newly created branch. Do not continue work on an existing branch unless the user explicitly asks for it."
 
 [conventions]
 python = "Use a simple, direct Python style without unnecessary abstraction."
