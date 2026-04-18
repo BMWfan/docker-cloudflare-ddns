@@ -1,0 +1,38 @@
+[project]
+name = "docker-cloudflare-ddns"
+runtime = "python3.11"
+
+[purpose]
+summary = "Docker service for updating Cloudflare AAAA records based on the public IPv6 address."
+
+[rules]
+1 = "Do not commit secrets. Real values belong only in .env, never in README examples, workflow files, or Compose examples."
+2 = "The core DNS logic lives in update_dns.py. app.py exposes HTTP triggers and event_listener.py reacts to Docker events."
+3 = "Change DNS behavior intentionally. The project currently updates Cloudflare AAAA records based on the public IPv6 address."
+4 = "docker-compose.yml is intended for running a prebuilt GHCR image. Local builds are only for development or debugging."
+5 = "Release automation is based on GitHub Actions and GHCR. Image tags should include at least <version> and latest."
+6 = "Before finishing Python changes, run at least `python3 -m py_compile app.py event_listener.py update_dns.py`."
+7 = "Before changing Compose or release files, keep README, .env.example, workflow files, and docker-compose.yml consistent."
+8 = "Do not accidentally remove locking or other protections against parallel DNS updates."
+
+[conventions]
+python = "Use a simple, direct Python style without unnecessary abstraction."
+logging = "Keep logs short and operational."
+dependencies = "Only add small, clearly justified dependencies."
+docs = "Keep the README up to date when setup, release, or usage changes."
+
+[common_commands]
+syntax_check = "python3 -m py_compile app.py event_listener.py update_dns.py"
+compose_validate = "docker compose config"
+compose_pull = "docker compose pull"
+compose_up = "docker compose up -d"
+compose_logs = "docker compose logs -f docker-cloudflare-ddns"
+
+[release]
+branch = "main"
+registry = "ghcr.io"
+image_source = "IMAGE_NAME from .env"
+
+[notes]
+1 = "If a Cloudflare token ever appears in chat, Git history, or a repository, it must be rotated."
+2 = "Keep the service name and container name consistent as `docker-cloudflare-ddns` unless the user explicitly requests otherwise."
